@@ -512,6 +512,8 @@ let fontSize = 17;
 // Web Speech
 let recognition = null;
 let recognitionActive = false;
+let debounceTimer = null;
+let lastInterimText = '';
 
 // Cantonese (Whisper)
 let yueStream = null;
@@ -656,12 +658,25 @@ function buildRecognition() {
       if (e.results[i].isFinal) final += t;
       else interim += t;
     }
-    // 顯示interim實時文字
-    document.getElementById('interim').textContent = interim;
-    // 有final結果才翻譯
+
     if (final.trim().length > 1) {
+      // Final結果：清debounce，直接翻譯
+      clearTimeout(debounceTimer);
+      lastInterimText = '';
       document.getElementById('interim').textContent = '';
       enqueueTranslation(final.trim(), 'webspeech');
+    } else if (interim.trim().length > 1) {
+      // Interim：只顯示一個小點表示「正在聽」，debounce 600ms後送翻譯
+      document.getElementById('interim').textContent = '…';
+      lastInterimText = interim.trim();
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        if (lastInterimText.length > 1) {
+          document.getElementById('interim').textContent = '';
+          enqueueTranslation(lastInterimText, 'webspeech');
+          lastInterimText = '';
+        }
+      }, 600);
     }
   };
 
@@ -710,6 +725,8 @@ async function startLive() {
 
 function stopLive() {
   isLive = false;
+  clearTimeout(debounceTimer);
+  lastInterimText = '';
   if (recognition) { try { recognition.stop(); } catch(e) {} recognition = null; }
   document.getElementById('rec-btn').classList.remove('live');
   document.getElementById('rec-icon').textContent = '▶';
@@ -817,7 +834,7 @@ async function whisper(blob, mimeType) {
   const fd = new FormData();
   fd.append('file', new File([blob], `audio.${ext}`, { type: mimeType }));
   fd.append('model', 'whisper-1');
-  fd.append('language', 'yue'); // 粵語
+  fd.append('language', 'zh'); // zh自動識別粵語/普通話
 
   const r = await fetch('https://api.openai.com/v1/audio/transcriptions', {
     method: 'POST',
@@ -865,7 +882,7 @@ Rules:
     },
     body: JSON.stringify({
       model: 'claude-sonnet-4-5',
-      max_tokens: 600,
+      max_tokens: 400,
       system: isYue
         ? systemPrompt.replace('Detect the language', 'The input is Cantonese (粵語). Translate it')
         : systemPrompt,
