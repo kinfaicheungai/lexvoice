@@ -27,6 +27,7 @@
   --radius: 14px;
   --shadow: 0 8px 32px rgba(0,0,0,0.5);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --font-size: 1.05rem;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -43,9 +44,7 @@ body {
   width: 100%;
 }
 
-/* ════════════════════════════════
-   SETUP SCREEN
-════════════════════════════════ */
+/* ════ SETUP ════ */
 #setup {
   position: fixed; inset: 0; z-index: 200;
   background: var(--bg);
@@ -53,29 +52,18 @@ body {
   padding: 1.5rem;
   overflow-y: auto;
 }
-
 .setup-inner { width: 100%; max-width: 460px; padding-bottom: 2rem; }
 
-.brand {
-  text-align: center;
-  padding: 2rem 0 1.8rem;
-}
-
+.brand { text-align: center; padding: 2rem 0 1.8rem; }
 .brand-name {
   font-family: 'Crimson Pro', serif;
-  font-size: 3rem;
-  font-weight: 300;
-  letter-spacing: 0.04em;
-  line-height: 1;
+  font-size: 3rem; font-weight: 300;
+  letter-spacing: 0.04em; line-height: 1;
 }
 .brand-name span { color: var(--accent); }
-
 .brand-sub {
-  font-size: 0.7rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-top: 0.5rem;
+  font-size: 0.7rem; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--muted); margin-top: 0.5rem;
 }
 
 .setup-card {
@@ -83,473 +71,301 @@ body {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 1.6rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.2rem;
+  display: flex; flex-direction: column; gap: 1.2rem;
 }
 
 .field label {
-  display: block;
-  font-size: 0.68rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 0.45rem;
+  display: block; font-size: 0.68rem;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 0.45rem;
 }
-
-.field-row {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-}
-
+.field-row { display: flex; gap: 0.5rem; }
 .field input {
-  flex: 1;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 0.75rem 1rem;
-  color: var(--text);
-  font-family: 'DM Mono', monospace;
-  font-size: 0.82rem;
-  outline: none;
-  transition: border-color 0.2s;
-  min-width: 0;
+  flex: 1; background: var(--bg);
+  border: 1px solid var(--border); border-radius: 8px;
+  color: var(--text); font-family: 'DM Mono', monospace;
+  font-size: 0.82rem; padding: 0.65rem 0.85rem;
+  outline: none; transition: border-color 0.15s;
 }
 .field input:focus { border-color: var(--accent); }
-.field input::placeholder { color: var(--muted); font-size: 0.78rem; }
-
 .eye-btn {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  width: 38px; height: 38px;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer; color: var(--muted); font-size: 1rem;
-  flex-shrink: 0; transition: color 0.15s;
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 8px; color: var(--muted);
+  cursor: pointer; font-size: 1rem; padding: 0 0.7rem;
 }
-.eye-btn:hover { color: var(--text); }
-
-.hint {
-  font-size: 0.7rem;
-  color: var(--muted);
-  margin-top: 0.3rem;
-  line-height: 1.5;
-}
+.hint { font-size: 0.72rem; color: var(--muted); margin-top: 0.4rem; line-height: 1.5; }
 .hint a { color: var(--accent); text-decoration: none; }
-
+.hint.optional { color: var(--gold); opacity: 0.8; }
 .saved-notice {
-  font-size: 0.7rem;
-  color: var(--success);
-  margin-top: 0.3rem;
-  display: none;
+  display: none; font-size: 0.68rem;
+  color: var(--success); margin-top: 0.3rem;
 }
-
-.divider {
-  border: none;
-  border-top: 1px solid var(--border);
-}
-
+.divider { border: none; border-top: 1px solid var(--border); }
 .section-label {
-  font-size: 0.68rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 0.6rem;
+  font-size: 0.62rem; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--muted); margin-bottom: 0.85rem;
 }
-
 .toggle-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.1rem 0;
+  display: flex; align-items: center;
+  justify-content: space-between; gap: 1rem;
 }
-
-.toggle-label { font-size: 0.9rem; color: var(--dim); }
-
-.toggle {
-  position: relative;
-  width: 44px; height: 24px;
-}
+.toggle-label { font-size: 0.88rem; }
+.toggle { position: relative; width: 42px; height: 24px; flex-shrink: 0; }
 .toggle input { opacity: 0; width: 0; height: 0; }
 .toggle-slider {
-  position: absolute; inset: 0;
-  background: var(--border);
-  border-radius: 24px;
-  cursor: pointer;
-  transition: background 0.2s;
+  position: absolute; inset: 0; cursor: pointer;
+  background: var(--surface2); border-radius: 24px;
+  border: 1px solid var(--border); transition: 0.2s;
 }
 .toggle-slider:before {
-  content: '';
-  position: absolute;
-  width: 18px; height: 18px;
-  left: 3px; top: 3px;
-  background: white;
-  border-radius: 50%;
-  transition: transform 0.2s;
+  content: ''; position: absolute;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--muted); top: 3px; left: 3px; transition: 0.2s;
 }
-.toggle input:checked + .toggle-slider { background: var(--accent); }
-.toggle input:checked + .toggle-slider:before { transform: translateX(20px); }
+.toggle input:checked + .toggle-slider { background: var(--accent-dim); border-color: var(--accent); }
+.toggle input:checked + .toggle-slider:before { background: var(--accent); transform: translateX(18px); }
+
+/* Font size slider */
+.slider-row { display: flex; align-items: center; gap: 0.75rem; }
+.slider-row input[type=range] {
+  flex: 1; accent-color: var(--accent);
+  height: 4px; cursor: pointer;
+}
+.slider-val {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.72rem; color: var(--accent);
+  min-width: 2.5rem; text-align: right;
+}
 
 .btn-start {
-  width: 100%;
-  padding: 1rem;
-  background: var(--accent);
-  color: #080a10;
-  border: none;
-  border-radius: 10px;
+  background: var(--accent); color: #fff;
+  border: none; border-radius: 10px;
   font-family: 'Figtree', sans-serif;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  letter-spacing: 0.02em;
-  transition: opacity 0.15s, transform 0.1s;
+  font-size: 1rem; font-weight: 600;
+  padding: 0.9rem; cursor: pointer;
+  letter-spacing: 0.04em; transition: opacity 0.15s;
 }
-.btn-start:hover { opacity: 0.9; transform: translateY(-1px); }
-.btn-start:active { transform: translateY(0); opacity: 0.85; }
+.btn-start:hover { opacity: 0.88; }
 
-/* ════════════════════════════════
-   MAIN APP
-════════════════════════════════ */
+/* ════ APP ════ */
 #app { display: none; flex-direction: column; height: 100dvh; }
 #app.active { display: flex; }
 
-/* Header */
 .app-header {
-  display: flex;
-  align-items: center;
+  display: flex; align-items: center;
   justify-content: space-between;
-  padding: 0.75rem 1.1rem;
+  padding: 0.7rem 1rem;
   background: var(--surface);
   border-bottom: 1px solid var(--border);
   flex-shrink: 0;
-  padding-top: max(0.75rem, env(safe-area-inset-top));
 }
-
 .header-brand {
   font-family: 'Crimson Pro', serif;
-  font-size: 1.4rem;
-  font-weight: 300;
+  font-size: 1.35rem; font-weight: 300;
   letter-spacing: 0.04em;
 }
 .header-brand span { color: var(--accent); }
-
-.header-controls {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
+.header-controls { display: flex; align-items: center; gap: 0.4rem; }
 .hdr-btn {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  width: 36px; height: 36px;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer; color: var(--muted); font-size: 1rem;
-  transition: all 0.15s;
+  background: none; border: 1px solid transparent;
+  border-radius: 8px; color: var(--muted);
+  cursor: pointer; font-size: 1.1rem;
+  padding: 0.3rem 0.4rem; transition: all 0.15s;
 }
-.hdr-btn:hover { color: var(--text); border-color: var(--accent); }
-.hdr-btn.on { color: var(--gold); border-color: rgba(255,204,68,0.4); background: var(--gold-dim); }
-.hdr-btn.speaking { color: var(--success); border-color: rgba(74,255,158,0.4); animation: pulse 1s infinite; }
+.hdr-btn.on { color: var(--accent); border-color: var(--accent-dim); }
+.hdr-btn:hover { border-color: var(--border); }
 
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
-
-/* ════════════════════════════════
-   CONTINUOUS TEXT FEED
-════════════════════════════════ */
+/* ════ CONTINUOUS FEED ════ */
 .feed {
-  flex: 1;
-  overflow-y: auto;
-  padding: 1.1rem 1.2rem 0.8rem;
+  flex: 1; overflow-y: auto;
+  padding: 1.2rem 1.2rem 0.8rem;
   overscroll-behavior: contain;
 }
 .feed::-webkit-scrollbar { width: 3px; }
 .feed::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
-/* Empty state */
 .empty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: var(--muted);
-  text-align: center;
-  padding: 4rem 2rem;
-  gap: 1rem;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  color: var(--muted); text-align: center;
+  padding: 4rem 2rem; gap: 1rem;
+  min-height: 60vh;
 }
 .empty-icon { font-size: 2.5rem; opacity: 0.35; }
-.empty-text { font-size: 0.88rem; line-height: 1.7; max-width: 240px; }
+.empty-text { font-size: 0.88rem; line-height: 1.7; max-width: 260px; }
 
-/* Lang direction divider — shown when direction changes */
 .lang-divider {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  margin: 1.1rem 0 0.7rem;
-  opacity: 0.7;
+  display: flex; align-items: center; gap: 0.6rem;
+  margin: 1.1rem 0 0.7rem; opacity: 0.6;
 }
-.lang-divider-line {
-  flex: 1;
-  height: 1px;
-  background: var(--border);
-}
+.lang-divider-line { flex: 1; height: 1px; background: var(--border); }
 .lang-divider-label {
-  font-size: 0.6rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--muted);
-  white-space: nowrap;
+  font-size: 0.6rem; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--muted); white-space: nowrap;
 }
 
-/* Entry: one transcription+translation block */
-.entry {
-  margin-bottom: 0.9rem;
-  animation: entryIn 0.22s ease;
-}
-@keyframes entryIn {
-  from { opacity: 0; transform: translateY(5px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-.entry-orig {
-  font-size: 0.82rem;
+/* Interim (streaming) text */
+.entry-interim {
+  font-size: var(--font-size);
   color: var(--muted);
   font-style: italic;
-  line-height: 1.55;
-  margin-bottom: 0.28rem;
-}
-
-.entry-trans {
-  font-size: 1.05rem;
   line-height: 1.7;
-  color: var(--text);
+  margin-bottom: 0.5rem;
+  opacity: 0.7;
+  min-height: 1.5em;
 }
 
-/* Term highlight inline */
+.entry {
+  margin-bottom: 1rem;
+  animation: entryIn 0.2s ease;
+}
+@keyframes entryIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.entry-orig {
+  font-size: calc(var(--font-size) * 0.82);
+  color: var(--muted); font-style: italic;
+  line-height: 1.55; margin-bottom: 0.25rem;
+}
+.entry-trans {
+  font-size: var(--font-size);
+  line-height: 1.75; color: var(--text);
+}
+
+/* Term highlight */
 .term-hl {
-  background: rgba(255,204,68,0.18);
-  color: var(--gold);
-  border-radius: 3px;
-  padding: 0 2px;
-  cursor: pointer;
+  background: rgba(255,204,68,0.18); color: var(--gold);
+  border-radius: 3px; padding: 0 2px; cursor: pointer;
   border-bottom: 1px solid rgba(255,204,68,0.4);
   transition: background 0.15s;
 }
 .term-hl:hover { background: rgba(255,204,68,0.32); }
 
-/* Processing indicator inline */
+/* Processing */
 .proc-entry {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.7rem;
-  opacity: 0.6;
+  display: flex; align-items: center; gap: 0.5rem;
+  margin-bottom: 0.5rem; opacity: 0.55;
 }
 .spinner {
   width: 13px; height: 13px;
   border: 2px solid var(--border);
   border-top-color: var(--accent);
   border-radius: 50%;
-  animation: spin 0.7s linear infinite;
-  flex-shrink: 0;
+  animation: spin 0.7s linear infinite; flex-shrink: 0;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 .proc-text { font-size: 0.78rem; color: var(--muted); }
 
-/* Live bar */
+/* ════ LIVE BAR ════ */
 .live-bar {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  padding: 0.55rem 1rem;
+  display: flex; align-items: center; gap: 0.6rem;
+  padding: 0.5rem 1rem;
   background: var(--surface);
   border-top: 1px solid var(--border);
-  flex-shrink: 0;
-  min-height: 42px;
+  flex-shrink: 0; min-height: 38px;
 }
 .live-dot {
-  width: 7px; height: 7px;
-  border-radius: 50%;
-  background: var(--muted);
-  flex-shrink: 0;
-  transition: background 0.2s;
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--muted); flex-shrink: 0; transition: background 0.2s;
 }
-.live-dot.rec { background: var(--danger); animation: recDot 1s infinite; }
-.live-dot.proc { background: var(--accent); animation: recDot 1s infinite; }
-@keyframes recDot { 0%,100%{opacity:1} 50%{opacity:0.3} }
+.live-dot.rec { background: var(--danger); animation: pulse 1.2s infinite; }
+.live-dot.proc { background: var(--accent); animation: pulse 0.8s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
+.live-text { font-size: 0.78rem; color: var(--muted); flex: 1; }
 
-.live-text {
-  flex: 1;
-  font-size: 0.82rem;
-  color: var(--dim);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.countdown-ring {
-  width: 22px; height: 22px;
-  flex-shrink: 0;
-}
-.ring-bg { fill: none; stroke: var(--border); stroke-width: 3; }
-.ring-fg { fill: none; stroke: var(--accent); stroke-width: 3; stroke-linecap: round;
-  transform: rotate(-90deg); transform-origin: center;
-  transition: stroke-dashoffset 0.1s linear; }
-
-/* Bottom controls */
+/* ════ CONTROLS ════ */
 .controls {
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  padding: 0.8rem 1rem;
-  padding-bottom: max(0.8rem, var(--safe-bottom));
+  display: flex; align-items: center; justify-content: space-around;
+  padding: 0.7rem 1rem calc(0.7rem + var(--safe-bottom));
   background: var(--surface);
   border-top: 1px solid var(--border);
-  flex-shrink: 0;
-  gap: 0.5rem;
+  flex-shrink: 0; gap: 0.5rem;
 }
 
 .ctrl-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.3rem;
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: var(--muted);
-  font-family: 'Figtree', sans-serif;
-  transition: color 0.15s;
-  padding: 0.3rem 0.8rem;
-  border-radius: 10px;
+  background: none; border: none; cursor: pointer;
+  color: var(--muted); display: flex; flex-direction: column;
+  align-items: center; gap: 0.3rem;
+  padding: 0.4rem 0.6rem; border-radius: 10px;
+  transition: color 0.15s; min-width: 52px;
 }
 .ctrl-btn:hover { color: var(--text); }
-.ctrl-btn.on { color: var(--gold); }
-.ctrl-btn.danger { color: var(--danger); }
-.ctrl-icon { font-size: 1.4rem; line-height: 1; }
-.ctrl-label { font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; }
+.ctrl-icon { font-size: 1.3rem; line-height: 1; }
+.ctrl-label { font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; }
 
-/* Big center record button */
-.rec-wrap {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.3rem;
-}
-
+.rec-wrap { display: flex; flex-direction: column; align-items: center; gap: 0.35rem; }
 .rec-btn {
-  width: 68px; height: 68px;
-  border-radius: 50%;
-  border: 3px solid var(--border);
+  width: 60px; height: 60px; border-radius: 50%;
   background: var(--surface2);
-  cursor: pointer;
+  border: 2px solid var(--border);
+  color: var(--text); cursor: pointer; font-size: 1.4rem;
   display: flex; align-items: center; justify-content: center;
-  font-size: 1.7rem;
   transition: all 0.2s;
-  position: relative;
 }
-.rec-btn:hover { border-color: var(--accent); }
-.rec-btn.live {
-  border-color: var(--danger);
-  background: var(--danger-dim);
-  box-shadow: 0 0 0 0 rgba(255,74,74,0.5);
-  animation: recPulse 1.4s infinite;
-}
-.rec-btn.paused {
-  border-color: var(--muted);
-  opacity: 0.6;
-}
-@keyframes recPulse {
-  0%  { box-shadow: 0 0 0 0 rgba(255,74,74,0.5); }
-  70% { box-shadow: 0 0 0 14px rgba(255,74,74,0); }
-  100%{ box-shadow: 0 0 0 0 rgba(255,74,74,0); }
-}
+.rec-btn.live { background: var(--danger-dim); border-color: var(--danger); color: var(--danger); }
+.rec-label-text { font-size: 0.62rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
 
-.rec-label-text { font-size: 0.6rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+/* Cantonese press-hold button */
+.yue-btn {
+  background: var(--gold-dim);
+  border: 2px solid rgba(255,204,68,0.3);
+  border-radius: 10px; color: var(--gold);
+  cursor: pointer; display: flex; flex-direction: column;
+  align-items: center; gap: 0.3rem;
+  padding: 0.5rem 0.7rem;
+  transition: all 0.15s; min-width: 52px;
+  -webkit-user-select: none; user-select: none;
+  touch-action: none;
+}
+.yue-btn.pressing {
+  background: rgba(255,204,68,0.28);
+  border-color: var(--gold);
+  transform: scale(0.95);
+}
+.yue-btn.hidden { display: none; }
+.yue-icon { font-size: 1.3rem; line-height: 1; }
+.yue-label { font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; }
 
-/* Tooltip */
+/* ════ TOOLTIP ════ */
 .tooltip {
-  position: fixed;
-  bottom: 140px;
-  left: 1rem; right: 1rem;
-  background: var(--surface2);
-  border: 1px solid var(--gold);
-  border-radius: var(--radius);
-  padding: 1rem;
-  z-index: 300;
+  position: fixed; bottom: 100px; left: 1rem; right: 1rem;
+  background: var(--surface2); border: 1px solid var(--gold);
+  border-radius: var(--radius); padding: 1rem 1.1rem;
+  z-index: 100; opacity: 0; pointer-events: none;
+  transform: translateY(6px); transition: all 0.2s;
   box-shadow: var(--shadow);
-  display: none;
-  animation: cardIn 0.2s ease;
 }
-.tooltip.show { display: block; }
-.tooltip-term { color: var(--gold); font-weight: 600; font-size: 0.95rem; margin-bottom: 0.4rem; }
-.tooltip-def { font-size: 0.85rem; color: var(--dim); line-height: 1.6; }
+.tooltip.show { opacity: 1; pointer-events: all; transform: translateY(0); }
 .tooltip-close {
-  position: absolute; top: 0.7rem; right: 0.8rem;
+  position: absolute; top: 0.6rem; right: 0.7rem;
   background: none; border: none; color: var(--muted);
-  cursor: pointer; font-size: 1rem;
+  cursor: pointer; font-size: 0.9rem;
 }
+.tooltip-term { font-size: 0.95rem; font-weight: 600; color: var(--gold); margin-bottom: 0.4rem; }
+.tooltip-def { font-size: 0.85rem; color: var(--dim); line-height: 1.6; }
 
-/* Toast */
+/* ════ TOAST ════ */
 .toast {
-  position: fixed; top: 1rem; left: 50%;
-  transform: translateX(-50%) translateY(-60px);
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 0.55rem 1.1rem;
-  font-size: 0.82rem;
-  color: var(--dim);
-  z-index: 400;
-  transition: transform 0.25s ease;
-  white-space: nowrap;
-  pointer-events: none;
+  position: fixed; bottom: 130px; left: 50%; transform: translateX(-50%) translateY(10px);
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 20px; padding: 0.55rem 1.1rem;
+  font-size: 0.82rem; color: var(--dim);
+  opacity: 0; pointer-events: none; transition: all 0.25s;
+  white-space: nowrap; z-index: 300;
 }
-.toast.show { transform: translateX(-50%) translateY(0); }
-.toast.ok   { border-color: var(--success); color: var(--success); }
-.toast.err  { border-color: var(--danger);  color: #ff8888; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast.ok  { border-color: var(--success); color: var(--success); }
+.toast.err { border-color: var(--danger);  color: #ff8888; }
 
 .lang-sel-btn {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  color: var(--muted);
-  font-family: 'Figtree', sans-serif;
-  font-size: 0.72rem;
-  padding: 0.25rem 0.6rem;
-  cursor: pointer;
-  transition: all 0.15s;
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 6px; color: var(--muted);
+  font-family: 'Figtree', sans-serif; font-size: 0.72rem;
+  padding: 0.25rem 0.6rem; cursor: pointer; transition: all 0.15s;
 }
 .lang-sel-btn.active {
-  background: var(--accent-dim);
-  border-color: var(--accent);
-  color: var(--accent);
-}
-
-/* TTS mode toggle in header */
-.mode-badge {
-  font-family: 'DM Mono', monospace;
-  font-size: 0.58rem;
-  letter-spacing: 0.06em;
-  padding: 0.18rem 0.45rem;
-  border-radius: 4px;
-  cursor: pointer;
-  border: 1px solid var(--border);
-  background: var(--surface2);
-  color: var(--muted);
-  transition: all 0.15s;
-  white-space: nowrap;
-}
-.mode-badge.sequential {
-  border-color: rgba(74,255,158,0.35);
-  color: var(--success);
-  background: rgba(74,255,158,0.08);
-}
-.mode-badge.live-mode {
-  border-color: rgba(255,74,74,0.35);
-  color: #ff8888;
-  background: rgba(255,74,74,0.08);
+  background: var(--accent-dim); border-color: var(--accent); color: var(--accent);
 }
 </style>
 </head>
@@ -561,49 +377,41 @@ body {
   <div class="brand">
     <div class="brand-name">Lex<span>Voice</span></div>
     <div class="brand-sub">Real-time Legal Interpreter</div>
-    <div style="font-size:0.6rem;color:var(--border);margin-top:0.4rem;letter-spacing:0.1em">v3.0</div>
+    <div style="font-size:0.6rem;color:var(--border);margin-top:0.4rem;letter-spacing:0.1em">v5.0</div>
   </div>
 
   <div class="setup-card">
 
     <div class="field">
-      <label>OpenAI API Key <span style="color:var(--muted);font-size:0.65rem;text-transform:none;letter-spacing:0">(語音識別 + 語音輸出)</span></label>
-      <div class="field-row">
-        <input type="password" id="oai-key" placeholder="sk-..." autocomplete="off" />
-        <button class="eye-btn" onclick="toggleEye('oai-key',this)">👁</button>
-      </div>
-      <div class="hint"><a href="https://platform.openai.com/api-keys" target="_blank">platform.openai.com</a> → API Keys。需要充值才能使用 Whisper。</div>
-      <div class="saved-notice" id="oai-saved">✓ 已記住</div>
-    </div>
-
-    <div class="field">
-      <label>Anthropic API Key <span style="color:var(--muted);font-size:0.65rem;text-transform:none;letter-spacing:0">(Claude 翻譯)</span></label>
+      <label>Anthropic API Key <span style="color:var(--muted);font-size:0.65rem;text-transform:none;letter-spacing:0">(Claude 翻譯 — 必填)</span></label>
       <div class="field-row">
         <input type="password" id="ant-key" placeholder="sk-ant-..." autocomplete="off" />
         <button class="eye-btn" onclick="toggleEye('ant-key',this)">👁</button>
       </div>
-      <div class="hint">你的 Anthropic credit，用於 AI 翻譯 + 術語解釋。</div>
+      <div class="hint">console.anthropic.com → API Keys</div>
       <div class="saved-notice" id="ant-saved">✓ 已記住</div>
+    </div>
+
+    <div class="field">
+      <label>OpenAI API Key <span style="color:var(--muted);font-size:0.65rem;text-transform:none;letter-spacing:0">(粵語識別 — 可選)</span></label>
+      <div class="field-row">
+        <input type="password" id="oai-key" placeholder="sk-..." autocomplete="off" />
+        <button class="eye-btn" onclick="toggleEye('oai-key',this)">👁</button>
+      </div>
+      <div class="hint optional">⚠ 填入後才有粵語按鈕。platform.openai.com → API Keys</div>
+      <div class="saved-notice" id="oai-saved">✓ 已記住</div>
     </div>
 
     <hr class="divider">
 
     <div>
-      <div class="section-label">功能設定</div>
+      <div class="section-label">顯示設定</div>
 
-      <div class="toggle-row" style="margin-bottom:0.75rem">
-        <span class="toggle-label">🔊 翻譯後語音朗讀</span>
-        <label class="toggle">
-          <input type="checkbox" id="tts-on" checked>
-          <span class="toggle-slider"></span>
-        </label>
-      </div>
-
-      <div class="toggle-row" style="margin-bottom:0.75rem" id="tts-lang-row">
-        <span class="toggle-label">🗣 中文語音語言</span>
-        <div style="display:flex;gap:0.4rem">
-          <button class="lang-sel-btn active" id="btn-mandarin" onclick="setTTSLang('mandarin')">普通話</button>
-          <button class="lang-sel-btn" id="btn-cantonese" onclick="setTTSLang('cantonese')">粵語（只文字）</button>
+      <div class="toggle-row" style="margin-bottom:0.9rem">
+        <span class="toggle-label">🔤 翻譯文字大小</span>
+        <div class="slider-row" style="flex:1;margin-left:1rem">
+          <input type="range" id="font-slider" min="14" max="36" value="17" oninput="updateFontSize(this.value)">
+          <span class="slider-val" id="font-val">17</span>
         </div>
       </div>
 
@@ -632,12 +440,9 @@ body {
 <!-- ══ APP ══ -->
 <div id="app">
   <div class="app-header">
-    <div class="header-brand">Lex<span>Voice</span> <span style="font-size:0.6rem;color:var(--muted);font-family:'DM Mono',monospace;font-weight:400">v3.1</span></div>
+    <div class="header-brand">Lex<span>Voice</span> <span style="font-size:0.58rem;color:var(--muted);font-family:'DM Mono',monospace;font-weight:400">v5.0</span></div>
     <div class="header-controls">
-      <button class="mode-badge sequential" id="mode-btn" onclick="toggleTTSMode()" title="語音模式">按序</button>
       <button class="hdr-btn on" id="terms-btn" onclick="toggleTerms()" title="術語解釋">⚖️</button>
-      <button class="hdr-btn" id="tts-btn" onclick="toggleTTS()" title="語音朗讀">🔊</button>
-      <button class="hdr-btn" id="stop-tts-btn" onclick="stopTTS()" title="停止朗讀" style="display:none">⏹</button>
       <button class="hdr-btn" onclick="goSettings()" title="設定">⚙️</button>
     </div>
   </div>
@@ -645,18 +450,15 @@ body {
   <div class="feed" id="feed">
     <div class="empty" id="empty">
       <div class="empty-icon">🎙</div>
-      <div class="empty-text">按下開始，自動偵測英文 / 普通話 / 粵語<br>翻譯會連續顯示在此</div>
+      <div class="empty-text">按開始，自動連續識別<br>英文 / 普通話<br><br>粵語請按住 粵 鍵</div>
     </div>
+    <!-- Interim display: live streaming text -->
+    <div class="entry-interim" id="interim"></div>
   </div>
 
   <div class="live-bar">
     <div class="live-dot" id="live-dot"></div>
     <div class="live-text" id="live-text">準備就緒</div>
-    <svg class="countdown-ring" viewBox="0 0 22 22" id="ring" style="display:none">
-      <circle class="ring-bg" cx="11" cy="11" r="8"/>
-      <circle class="ring-fg" id="ring-fg" cx="11" cy="11" r="8"
-        stroke-dasharray="50.3" stroke-dashoffset="50.3"/>
-    </svg>
   </div>
 
   <div class="controls">
@@ -671,6 +473,14 @@ body {
       </button>
       <div class="rec-label-text" id="rec-label">開始</div>
     </div>
+
+    <!-- 粵語按住鍵 — 只有填了OAI key才顯示 -->
+    <button class="yue-btn hidden" id="yue-btn"
+      onmousedown="startYue()" onmouseup="stopYue()" onmouseleave="stopYue()"
+      ontouchstart="startYue(event)" ontouchend="stopYue(event)">
+      <span class="yue-icon">粵</span>
+      <span class="yue-label">按住講</span>
+    </button>
 
     <button class="ctrl-btn" onclick="copyAll()">
       <span class="ctrl-icon">📋</span>
@@ -694,25 +504,26 @@ body {
 
 // ── STATE ──
 let oaiKey = '', antKey = '';
-let ttsOn = true, termsOn = true;
-let ttsLang = 'mandarin'; // 'mandarin' | 'cantonese'
-let ttsMode = 'sequential'; // 'sequential'=按序 | 'live'=跟上
-let lastLangDir = ''; // 追蹤上一段語言方向，換方向時加分隔線
+let termsOn = true;
 let isLive = false;
-let mediaStream = null;
-let mediaRecorder = null;
-let audioChunks = [];
-let chunkTimer = null;
-let countdownTimer = null;
-let countdownSec = 0;
-let lastTrans = '';
-let currentAudio = null;
-let isTTSSpeaking = false; // TTS正在播放中
+let lastLangDir = '';
+let fontSize = 17;
 
-const CHUNK_SEC = 5; // 5 seconds per chunk
-const CIRCUMFERENCE = 2 * Math.PI * 8; // r=8
+// Web Speech
+let recognition = null;
+let recognitionActive = false;
 
-// ── LEGAL TERMS (Queensland) ──
+// Cantonese (Whisper)
+let yueStream = null;
+let yueRecorder = null;
+let yueChunks = [];
+let yuePressing = false;
+
+// Translation queue
+let transQueue = [];
+let isTranslating = false;
+
+// ── LEGAL TERMS ──
 const TERMS = {
   'indictment':   { zh:'起訴書',   def:'正式刑事控罪文件，由檢察官提出，列明被告所面對的刑事罪行。' },
   'arraignment':  { zh:'提審',     def:'被告在法庭上首次聆聽控罪並作出答辯的程序。' },
@@ -745,19 +556,27 @@ const TERMS = {
   'cross-examination': { zh:'盤問', def:'由對方律師向證人提問，以質疑其證供可信性。' },
 };
 
-// ── SETUP: load saved keys ──
+// ── INIT ──
 window.addEventListener('DOMContentLoaded', () => {
   const ok = localStorage.getItem('lv_oai');
   const ak = localStorage.getItem('lv_ant');
-  if (ok) {
-    document.getElementById('oai-key').value = ok;
-    document.getElementById('oai-saved').style.display = 'block';
+  const fs = localStorage.getItem('lv_fontsize');
+  if (ok) { document.getElementById('oai-key').value = ok; document.getElementById('oai-saved').style.display = 'block'; }
+  if (ak) { document.getElementById('ant-key').value = ak; document.getElementById('ant-saved').style.display = 'block'; }
+  if (fs) {
+    fontSize = parseInt(fs);
+    document.getElementById('font-slider').value = fontSize;
+    document.getElementById('font-val').textContent = fontSize;
   }
-  if (ak) {
-    document.getElementById('ant-key').value = ak;
-    document.getElementById('ant-saved').style.display = 'block';
-  }
+  updateFontSize(fontSize);
 });
+
+function updateFontSize(val) {
+  fontSize = parseInt(val);
+  document.getElementById('font-val').textContent = val;
+  document.documentElement.style.setProperty('--font-size', val + 'px');
+  localStorage.setItem('lv_fontsize', val);
+}
 
 function toggleEye(id, btn) {
   const el = document.getElementById(id);
@@ -766,24 +585,31 @@ function toggleEye(id, btn) {
 }
 
 function startApp() {
-  const ok = document.getElementById('oai-key').value.trim();
   const ak = document.getElementById('ant-key').value.trim();
-  ttsOn   = document.getElementById('tts-on').checked;
+  const ok = document.getElementById('oai-key').value.trim();
   termsOn = document.getElementById('terms-on').checked;
   const saveKeys = document.getElementById('save-keys').checked;
 
-  if (!ok || !ok.startsWith('sk-')) { toast('請輸入正確的 OpenAI Key', 'err'); return; }
   if (!ak || !ak.startsWith('sk-ant-')) { toast('請輸入正確的 Claude Key', 'err'); return; }
 
-  oaiKey = ok; antKey = ak;
-  ttsLang = localStorage.getItem('lv_ttslang') || 'mandarin';
+  antKey = ak;
+  oaiKey = ok;
 
   if (saveKeys) {
-    localStorage.setItem('lv_oai', ok);
     localStorage.setItem('lv_ant', ak);
+    if (ok) localStorage.setItem('lv_oai', ok);
+    else localStorage.removeItem('lv_oai');
   } else {
-    localStorage.removeItem('lv_oai');
     localStorage.removeItem('lv_ant');
+    localStorage.removeItem('lv_oai');
+  }
+
+  // 顯示粵語按鈕（如有OAI key）
+  const yueBtn = document.getElementById('yue-btn');
+  if (ok && ok.startsWith('sk-')) {
+    yueBtn.classList.remove('hidden');
+  } else {
+    yueBtn.classList.add('hidden');
   }
 
   document.getElementById('setup').style.display = 'none';
@@ -793,45 +619,13 @@ function startApp() {
 }
 
 function goSettings() {
-  if (isLive) stopLive();
+  stopLive();
   document.getElementById('setup').style.display = 'flex';
   document.getElementById('app').classList.remove('active');
 }
 
-// ── HEADER BUTTONS ──
 function syncHeaderBtns() {
-  const tb = document.getElementById('tts-btn');
-  const qb = document.getElementById('terms-btn');
-  tb.className = 'hdr-btn' + (ttsOn ? ' on' : '');
-  qb.className = 'hdr-btn' + (termsOn ? ' on' : '');
-}
-
-function toggleTTS() {
-  ttsOn = !ttsOn;
-  syncHeaderBtns();
-  toast(ttsOn ? '語音朗讀：開' : '語音朗讀：關（只顯示文字）');
-}
-
-function toggleTTSMode() {
-  ttsMode = ttsMode === 'sequential' ? 'live' : 'sequential';
-  const btn = document.getElementById('mode-btn');
-  if (ttsMode === 'sequential') {
-    btn.textContent = '按序';
-    btn.className = 'mode-badge sequential';
-    toast('按序模式：TTS講完才錄下一段（完整但有delay）');
-  } else {
-    btn.textContent = '跟上';
-    btn.className = 'mode-badge live-mode';
-    toast('跟上模式：持續錄音，可能漏聽部分內容');
-  }
-}
-
-function setTTSLang(lang) {
-  ttsLang = lang;
-  localStorage.setItem('lv_ttslang', lang);
-  document.getElementById('btn-mandarin').classList.toggle('active', lang === 'mandarin');
-  document.getElementById('btn-cantonese').classList.toggle('active', lang === 'cantonese');
-  toast(lang === 'cantonese' ? '粵語：只顯示文字，不播語音' : '普通話語音已選');
+  document.getElementById('terms-btn').className = 'hdr-btn' + (termsOn ? ' on' : '');
 }
 
 function toggleTerms() {
@@ -840,204 +634,190 @@ function toggleTerms() {
   toast(termsOn ? '術語解釋：開' : '術語解釋：關');
 }
 
-function stopTTS() {
-  if (currentAudio) { currentAudio.pause(); currentAudio = null; }
-  isTTSSpeaking = false;
-  document.getElementById('stop-tts-btn').style.display = 'none';
-  document.querySelectorAll('.play-btn.playing').forEach(b => {
-    b.classList.remove('playing'); b.textContent = '🔊';
-  });
+// ── WEB SPEECH API ──
+function buildRecognition() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { toast('此瀏覽器不支援語音識別，請用 Chrome', 'err'); return null; }
+
+  const r = new SR();
+  r.continuous = true;
+  r.interimResults = true;
+  r.maxAlternatives = 1;
+  // 同時監聽英文和普通話 — 用en-US作主要，中文作備
+  // 注意：大部分瀏覽器只能設一個lang，用 cmn-Hans-CN 普通話
+  // 但Chrome支援 'zh-CN' 和 'en-US' 混合，用 'zh-CN' 最穩定
+  r.lang = 'zh-CN'; // Chrome會自動識別英文混入
+
+  r.onresult = (e) => {
+    let interim = '';
+    let final = '';
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      const t = e.results[i][0].transcript;
+      if (e.results[i].isFinal) final += t;
+      else interim += t;
+    }
+    // 顯示interim實時文字
+    document.getElementById('interim').textContent = interim;
+    // 有final結果才翻譯
+    if (final.trim().length > 1) {
+      document.getElementById('interim').textContent = '';
+      enqueueTranslation(final.trim(), 'webspeech');
+    }
+  };
+
+  r.onerror = (e) => {
+    if (e.error === 'no-speech') return; // 靜音，正常
+    if (e.error === 'aborted') return;
+    toast('識別錯誤：' + e.error, 'err');
+    setLive('識別錯誤', '');
+  };
+
+  r.onend = () => {
+    // 自動重啟保持連續
+    if (isLive && !yuePressing) {
+      try { r.start(); } catch(e) {}
+    }
+  };
+
+  return r;
 }
 
-// ── LIVE RECORDING ──
 async function toggleLive() {
-  if (isLive) { stopLive(); }
-  else { await startLive(); }
+  if (isLive) stopLive();
+  else await startLive();
 }
 
 async function startLive() {
+  // 請求麥克風權限
   try {
-    mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    await navigator.mediaDevices.getUserMedia({ audio: true });
   } catch (e) {
     toast('無法存取麥克風：' + e.message, 'err'); return;
   }
 
+  recognition = buildRecognition();
+  if (!recognition) return;
+
   isLive = true;
+  try { recognition.start(); } catch(e) {}
+
   document.getElementById('rec-btn').classList.add('live');
   document.getElementById('rec-icon').textContent = '⏹';
   document.getElementById('rec-label').textContent = '停止';
-  document.getElementById('ring').style.display = 'block';
-
-  startChunk();
+  setLive('監聽中…', 'rec');
+  hideEmpty();
 }
 
 function stopLive() {
   isLive = false;
-  clearTimeout(chunkTimer);
-  clearInterval(countdownTimer);
-
-  if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-    mediaRecorder.stop();
-  }
-  if (mediaStream) {
-    mediaStream.getTracks().forEach(t => t.stop());
-    mediaStream = null;
-  }
-
+  if (recognition) { try { recognition.stop(); } catch(e) {} recognition = null; }
   document.getElementById('rec-btn').classList.remove('live');
   document.getElementById('rec-icon').textContent = '▶';
   document.getElementById('rec-label').textContent = '開始';
-  document.getElementById('ring').style.display = 'none';
+  document.getElementById('interim').textContent = '';
   setLive('已停止', '');
 }
 
-function startChunk() {
-  if (!isLive) return;
-  audioChunks = [];
+// ── CANTONESE (WHISPER) ──
+async function startYue(e) {
+  if (e) e.preventDefault();
+  if (yuePressing) return;
+  yuePressing = true;
+  document.getElementById('yue-btn').classList.add('pressing');
 
-  // 語音關時用短切片（2秒）模擬實時出字；語音開用5秒
-  const chunkSec = (!ttsOn) ? 2 : CHUNK_SEC;
-
-  const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
-    ? 'audio/webm;codecs=opus'
-    : MediaRecorder.isTypeSupported('audio/webm') ? 'audio/webm' : 'audio/mp4';
-
-  mediaRecorder = new MediaRecorder(mediaStream, { mimeType });
-  mediaRecorder.ondataavailable = e => { if (e.data.size > 0) audioChunks.push(e.data); };
-  mediaRecorder.onstop = () => {
-    if (!isLive && audioChunks.length === 0) return;
-    const blob = new Blob(audioChunks, { type: mimeType });
-    if (blob.size > 2000) enqueueBlob(blob, mimeType); // 用queue取代直接processBlob
-    if (isLive && !isTTSSpeaking) startChunk(); // TTS播放時不開新段
-  };
-
-  mediaRecorder.start(300);
-  setLive('錄音中…', 'rec');
-
-  // Countdown
-  countdownSec = chunkSec;
-  updateRing(countdownSec);
-  clearInterval(countdownTimer);
-  countdownTimer = setInterval(() => {
-    countdownSec--;
-    updateRing(countdownSec);
-    if (countdownSec <= 0) clearInterval(countdownTimer);
-  }, 1000);
-
-  // Stop this chunk after chunkSec
-  chunkTimer = setTimeout(() => {
-    if (mediaRecorder && mediaRecorder.state === 'recording') {
-      mediaRecorder.stop();
-    }
-  }, chunkSec * 1000);
-}
-
-function updateRing(remaining) {
-  const pct = remaining / CHUNK_SEC;
-  const offset = CIRCUMFERENCE * (1 - pct);
-  document.getElementById('ring-fg').style.strokeDashoffset = offset;
-}
-
-// ── PROCESS QUEUE (確保TTS講完才處理下一段) ──
-let processingQueue = [];
-let isProcessing = false;
-
-function enqueueBlob(blob, mimeType) {
-  processingQueue.push({ blob, mimeType });
-  if (!isProcessing) drainQueue();
-}
-
-async function drainQueue() {
-  if (processingQueue.length === 0) { isProcessing = false; return; }
-  isProcessing = true;
-  const { blob, mimeType } = processingQueue.shift();
-  await processBlob(blob, mimeType);
-  drainQueue();
-}
-
-// ── PROCESS AUDIO ──
-async function processBlob(blob, mimeType) {
-  const proc = addProc();
-  hideEmpty();
-  setLive('識別中…', 'proc');
+  // 暫停Web Speech避免干擾
+  if (recognition) { try { recognition.stop(); } catch(e2) {} }
 
   try {
-    const text = await whisper(blob, mimeType);
-    if (!text || text.trim().length < 2) { proc.remove(); return; }
+    yueStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  } catch (err) {
+    toast('麥克風錯誤', 'err'); yuePressing = false; return;
+  }
 
-    setLive('翻譯中…', 'proc');
-    const result = await translate(text);
-    proc.remove();
+  yueChunks = [];
+  const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
+    ? 'audio/webm;codecs=opus' : 'audio/webm';
+  yueRecorder = new MediaRecorder(yueStream, { mimeType });
+  yueRecorder.ondataavailable = e2 => { if (e2.data.size > 0) yueChunks.push(e2.data); };
+  yueRecorder.start(100);
+  setLive('粵語錄音中… 放開即識別', 'rec');
+}
 
-    addEntry(result);
-    lastTrans = result.translation;
-    setLive('完成 · 繼續錄音', 'rec');
+async function stopYue(e) {
+  if (e) e.preventDefault();
+  if (!yuePressing) return;
+  yuePressing = false;
+  document.getElementById('yue-btn').classList.remove('pressing');
 
-    // 語音模式分支
-    if (ttsOn && result.translation) {
-      const skipTTS = (result.detected_lang === 'yue' && ttsLang === 'cantonese');
-      if (!skipTTS) {
-        if (ttsMode === 'sequential') {
-          // 按序模式：TTS播完才繼續，錄音暫停
-          const wasLive = isLive;
-          if (wasLive) pauseRecordingForTTS();
-          await speakTTS(result.translation, result.detected_lang);
-          if (wasLive) resumeRecordingAfterTTS();
-        } else {
-          // 跟上模式：不等待，錄音繼續
-          speakTTS(result.translation, result.detected_lang);
+  if (yueRecorder && yueRecorder.state !== 'inactive') {
+    yueRecorder.onstop = async () => {
+      const mimeType = yueRecorder.mimeType;
+      if (yueStream) { yueStream.getTracks().forEach(t => t.stop()); yueStream = null; }
+      const blob = new Blob(yueChunks, { type: mimeType });
+      if (blob.size > 1000) {
+        setLive('識別粵語中…', 'proc');
+        try {
+          const text = await whisper(blob, mimeType);
+          if (text && text.trim().length > 1) {
+            enqueueTranslation(text.trim(), 'yue');
+          }
+        } catch(err) {
+          toast('粵語識別失敗：' + err.message, 'err');
         }
       }
+      // 恢復Web Speech
+      if (isLive && recognition) {
+        try { recognition.start(); } catch(e2) {}
+        setLive('監聽中…', 'rec');
+      }
+    };
+    yueRecorder.stop();
+  } else {
+    if (yueStream) { yueStream.getTracks().forEach(t => t.stop()); yueStream = null; }
+    if (isLive && recognition) {
+      try { recognition.start(); } catch(e2) {}
+      setLive('監聽中…', 'rec');
     }
+  }
+}
+
+// ── TRANSLATION QUEUE ──
+function enqueueTranslation(text, source) {
+  transQueue.push({ text, source });
+  if (!isTranslating) drainTransQueue();
+}
+
+async function drainTransQueue() {
+  if (transQueue.length === 0) { isTranslating = false; return; }
+  isTranslating = true;
+  const { text, source } = transQueue.shift();
+  await processText(text, source);
+  drainTransQueue();
+}
+
+async function processText(text, source) {
+  const proc = addProc();
+  setLive('翻譯中…', 'proc');
+  try {
+    const result = await translate(text, source);
+    proc.remove();
+    addEntry(result);
+    if (isLive) setLive('監聽中…', 'rec');
+    else setLive('完成', '');
   } catch (err) {
     proc.remove();
     toast(err.message, 'err');
-    setLive('錯誤：' + err.message.substring(0, 40), '');
-    console.error(err);
+    if (isLive) setLive('監聽中…', 'rec');
   }
-}
-
-// ── TTS播放時暫停錄音，播完再繼續 ──
-function pauseRecordingForTTS() {
-  isTTSSpeaking = true;
-  clearTimeout(chunkTimer);
-  clearInterval(countdownTimer);
-  if (mediaRecorder && mediaRecorder.state === 'recording') {
-    mediaRecorder.pause(); // 暫停（不停止，保持stream）
-  }
-  setLive('語音輸出中…（錄音暫停）', 'proc');
-}
-
-function resumeRecordingAfterTTS() {
-  isTTSSpeaking = false;
-  if (!isLive) return;
-  if (mediaRecorder && mediaRecorder.state === 'paused') {
-    mediaRecorder.resume();
-    // 重設chunk計時
-    chunkTimer = setTimeout(() => {
-      if (mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop();
-    }, CHUNK_SEC * 1000);
-    countdownSec = CHUNK_SEC;
-    updateRing(CHUNK_SEC);
-    clearInterval(countdownTimer);
-    countdownTimer = setInterval(() => {
-      countdownSec--;
-      updateRing(countdownSec);
-      if (countdownSec <= 0) clearInterval(countdownTimer);
-    }, 1000);
-  } else {
-    // 若recorder已結束，重開新段
-    startChunk();
-  }
-  setLive('錄音中…', 'rec');
 }
 
 // ── WHISPER ──
 async function whisper(blob, mimeType) {
   const ext = mimeType.includes('mp4') ? 'mp4' : 'webm';
   const fd = new FormData();
-  fd.append('file', blob, `a.${ext}`);
+  fd.append('file', new File([blob], `audio.${ext}`, { type: mimeType }));
   fd.append('model', 'whisper-1');
+  fd.append('language', 'yue'); // 粵語
 
   const r = await fetch('https://api.openai.com/v1/audio/transcriptions', {
     method: 'POST',
@@ -1046,25 +826,34 @@ async function whisper(blob, mimeType) {
   });
   if (!r.ok) {
     const e = await r.json().catch(() => ({}));
-    throw new Error('Whisper: ' + (e.error?.message || `HTTP ${r.status}`));
+    throw new Error(e?.error?.message || `Whisper ${r.status}`);
   }
-  return (await r.json()).text;
+  const d = await r.json();
+  return d.text || '';
 }
 
 // ── CLAUDE TRANSLATE ──
-async function translate(text) {
-  const sys = `你是專業即時口譯員，服務於昆士蘭州法庭及醫院。
+async function translate(text, source) {
+  const isYue = source === 'yue';
+  // 偵測語言：粵語直接標記；其他用Claude判斷
+  const systemPrompt = `You are a professional legal interpreter specialising in Queensland law.
+Detect the language of the input and translate it:
+- English → Traditional Chinese (繁體中文)
+- Mandarin/Cantonese → English
 
-規則：
-1. 判斷語言：英文 → 繁體中文；普通話或粵語 → 英文
-2. 翻譯自然流暢，保留原意
-3. 法律及醫療術語必須準確，用昆士蘭/澳洲慣用詞
-4. 只輸出 JSON，不要任何其他文字或 markdown
+Return ONLY valid JSON, no markdown, no explanation:
+{
+  "original": "<original text>",
+  "translation": "<translated text>",
+  "detected_lang": "en" | "zh" | "yue",
+  "lang_label": "English" | "普通話" | "粵語",
+  "terms": [{"term":"<english term>","zh":"<chinese>","explanation":"<definition in Chinese>"}]
+}
 
-格式：
-{"detected_lang":"en|zh|yue","lang_label":"English|普通話|粵語","original":"原文","translation":"翻譯","terms":[{"term":"術語","zh":"中文","explanation":"一句解釋"}]}
-
-terms 只列原文中出現的重要法律/醫療術語，最多3個，沒有就填[]`;
+Rules:
+- Preserve legal terminology accuracy
+- terms array: only include Queensland legal terms found in the text, max 3
+- If input is already translated or too short, still return valid JSON`;
 
   const r = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
@@ -1076,118 +865,48 @@ terms 只列原文中出現的重要法律/醫療術語，最多3個，沒有就
     },
     body: JSON.stringify({
       model: 'claude-sonnet-4-5',
-      max_tokens: 500,
-      system: sys,
+      max_tokens: 600,
+      system: isYue
+        ? systemPrompt.replace('Detect the language', 'The input is Cantonese (粵語). Translate it')
+        : systemPrompt,
       messages: [{ role: 'user', content: text }]
     })
   });
 
   if (!r.ok) {
     const e = await r.json().catch(() => ({}));
-    throw new Error('Claude: ' + (e.error?.message || `HTTP ${r.status}`));
+    throw new Error(e?.error?.message || `Claude ${r.status}`);
   }
-
-  let raw = (await r.json()).content?.[0]?.text || '{}';
-  raw = raw.replace(/```json\n?/g,'').replace(/```\n?/g,'').trim();
-  try { return JSON.parse(raw); }
-  catch { return { detected_lang:'?', lang_label:'?', original:text, translation:raw, terms:[] }; }
-}
-
-// ── OPENAI TTS ──
-async function speakTTS(text, detectedLang) {
-  stopTTS();
-  // 粵語選擇時不播語音
-  if (detectedLang === 'yue' && ttsLang === 'cantonese') return;
-  const voice = detectedLang === 'en' ? 'nova' : 'shimmer';
-  return new Promise(async (resolve) => {
-    try {
-      const r = await fetch('https://api.openai.com/v1/audio/speech', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${oaiKey}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ model: 'tts-1', voice, input: text, speed: 0.95 })
-      });
-      if (!r.ok) { resolve(); return; }
-      const blob = await r.blob();
-      const url = URL.createObjectURL(blob);
-      currentAudio = new Audio(url);
-      isTTSSpeaking = true;
-      document.getElementById('stop-tts-btn').style.display = 'flex';
-      currentAudio.play();
-      currentAudio.onended = () => {
-        document.getElementById('stop-tts-btn').style.display = 'none';
-        isTTSSpeaking = false;
-        currentAudio = null;
-        resolve();
-      };
-      currentAudio.onerror = () => { isTTSSpeaking = false; resolve(); };
-    } catch (e) { isTTSSpeaking = false; resolve(); }
-  });
-}
-
-async function replayCard(text, lang, btn) {
-  stopTTS();
-  btn.classList.add('playing');
-  btn.textContent = '⏹';
-  await speakTTS(text, lang);
-  // track play state via audio events
-  if (currentAudio) {
-    currentAudio.onended = () => {
-      btn.classList.remove('playing');
-      btn.textContent = '🔊';
-      document.getElementById('stop-tts-btn').style.display = 'none';
-      currentAudio = null;
-    };
-  } else {
-    btn.classList.remove('playing'); btn.textContent = '🔊';
+  const d = await r.json();
+  const raw = d.content?.[0]?.text || '';
+  try {
+    const clean = raw.replace(/```json|```/g, '').trim();
+    return JSON.parse(clean);
+  } catch {
+    // fallback
+    return { original: text, translation: raw, detected_lang: isYue ? 'yue' : 'zh', lang_label: isYue ? '粵語' : '中文', terms: [] };
   }
 }
 
-// ── UI ──
-function hideEmpty() {
-  const e = document.getElementById('empty');
-  if (e) e.style.display = 'none';
-}
-
-function addProc() {
-  const feed = document.getElementById('feed');
-  const d = document.createElement('div');
-  d.className = 'proc-entry'; d.id = 'proc';
-  d.innerHTML = `<div class="spinner"></div><div class="proc-text">識別中…</div>`;
-  feed.appendChild(d);
-  feed.scrollTop = feed.scrollHeight;
-  return d;
-}
-
+// ── UI: ADD ENTRY ──
 function addEntry(r) {
   const feed = document.getElementById('feed');
   const langDir = r.detected_lang === 'en' ? 'en→zh' : 'zh→en';
 
-  // 換語言方向時加分隔線
-  if (lastLangDir && lastLangDir !== langDir) {
+  // 換方向加分隔線
+  if (lastLangDir !== langDir) {
     const div = document.createElement('div');
     div.className = 'lang-divider';
-    const arrow = langDir === 'en→zh' ? 'English → 中文' : '中文 → English';
-    div.innerHTML = `<div class="lang-divider-line"></div><div class="lang-divider-label">${arrow}</div><div class="lang-divider-line"></div>`;
-    feed.appendChild(div);
-  } else if (!lastLangDir) {
-    // 第一段，加個小標記
-    const div = document.createElement('div');
-    div.className = 'lang-divider';
-    const arrow = langDir === 'en→zh' ? 'English → 中文' : '中文 → English';
-    div.innerHTML = `<div class="lang-divider-line"></div><div class="lang-divider-label">${arrow}</div><div class="lang-divider-line"></div>`;
-    feed.appendChild(div);
+    const label = langDir === 'en→zh' ? 'English → 中文' : (r.detected_lang === 'yue' ? '粵語 → English' : '中文 → English');
+    div.innerHTML = `<div class="lang-divider-line"></div><div class="lang-divider-label">${label}</div><div class="lang-divider-line"></div>`;
+    feed.insertBefore(div, document.getElementById('interim'));
   }
   lastLangDir = langDir;
 
-  // 術語highlight
   let transHtml = escHtml(r.translation || '');
   let origHtml  = escHtml(r.original || '');
 
   if (termsOn) {
-    // 收集所有術語
     const allTerms = [...(r.terms || [])];
     if (r.original) {
       const words = r.original.toLowerCase().split(/\W+/);
@@ -1197,7 +916,6 @@ function addEntry(r) {
         }
       });
     }
-    // 在原文中highlight術語
     allTerms.forEach(t => {
       if (!t.term) return;
       const safeZh  = escAttr(t.zh || '');
@@ -1209,19 +927,28 @@ function addEntry(r) {
 
   const entry = document.createElement('div');
   entry.className = 'entry';
-  entry.innerHTML = `
-    <div class="entry-orig">${origHtml}</div>
-    <div class="entry-trans">${transHtml}</div>
-  `;
-
-  feed.appendChild(entry);
+  entry.innerHTML = `<div class="entry-orig">${origHtml}</div><div class="entry-trans">${transHtml}</div>`;
+  feed.insertBefore(entry, document.getElementById('interim'));
   feed.scrollTop = feed.scrollHeight;
 }
 
-// HTML escape helpers
+function addProc() {
+  const feed = document.getElementById('feed');
+  const d = document.createElement('div');
+  d.className = 'proc-entry';
+  d.innerHTML = `<div class="spinner"></div><div class="proc-text">翻譯中…</div>`;
+  feed.insertBefore(d, document.getElementById('interim'));
+  feed.scrollTop = feed.scrollHeight;
+  return d;
+}
+
+function hideEmpty() {
+  const e = document.getElementById('empty');
+  if (e) e.style.display = 'none';
+}
+
 function escHtml(s) {
-  return String(s||'')
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
     .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
 function escAttr(s) {
@@ -1242,14 +969,14 @@ function showTip(term, zh, def) {
 function closeTip() { document.getElementById('tooltip').classList.remove('show'); }
 
 function clearAll() {
-  stopTTS();
-  document.getElementById('feed').innerHTML = `
-    <div class="empty" id="empty">
-      <div class="empty-icon">🎙</div>
-      <div class="empty-text">按下開始，自動偵測英文 / 普通話 / 粵語<br>翻譯會連續顯示在此</div>
-    </div>`;
-  lastTrans = '';
+  stopLive();
+  const feed = document.getElementById('feed');
+  // 清除所有entry和divider，保留empty和interim
+  feed.querySelectorAll('.entry, .lang-divider, .proc-entry').forEach(e => e.remove());
+  document.getElementById('empty').style.display = '';
+  document.getElementById('interim').textContent = '';
   lastLangDir = '';
+  transQueue = [];
   setLive('準備就緒', '');
 }
 
@@ -1286,10 +1013,9 @@ function toast(msg, type='') {
   _tt = setTimeout(() => el.classList.remove('show'), 2800);
 }
 
-// Close tooltip on outside tap
 document.addEventListener('click', e => {
   const tip = document.getElementById('tooltip');
-  if (tip.classList.contains('show') && !tip.contains(e.target) && !e.target.classList.contains('term-chip')) closeTip();
+  if (tip.classList.contains('show') && !tip.contains(e.target) && !e.target.classList.contains('term-hl')) closeTip();
 });
 </script>
 </body>
