@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>LexVoice</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,400&family=DM+Mono:wght@400;500&family=Figtree:wght@300;400;500;600&display=swap');
+
+:root {
+  --bg: #0d0f14;
+  --surface: #151820;
+  --surface2: #1c2030;
+  --border: #252a3a;
+  --accent: #4a9eff;
+  --accent-dim: rgba(74,158,255,0.12);
+  --danger: #ff4a4a;
+  --danger-dim: rgba(255,74,74,0.15);
+  --success: #4aff9e;
+  --gold: #ffcc44;
+  --gold-dim: rgba(255,204,68,0.12);
+  --text: #e8eaf2;
+  --muted: #6b7280;
+  --dim: #9ca3af;
+  --radius: 14px;
+  --shadow: 0 8px 32px rgba(0,0,0,0.5);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+body {
+  font-family: 'Figtree', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+}
+
+/* ════════════════════════════════
+   SETUP SCREEN
+════════════════════════════════ */
+#setup {
+  position: fixed; inset: 0; z-index: 200;
+  background: var(--bg);
+  display: flex; align-items: flex-start; justify-content: center;
+  padding: 1.5rem;
+  overflow-y: auto;
+}
+
+.setup-inner { width: 100%; max-width: 460px; padding-bottom: 2rem; }
+
+.brand {
+  text-align: center;
+  padding: 2rem 0 1.8rem;
+}
+
+.brand-name {
+  font-family: 'Crimson Pro', serif;
+  font-size: 3rem;
+  font-weight: 300;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+.brand-name span { color: var(--accent); }
+
+.brand-sub {
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 0.5rem;
+}
+
+.setup-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.field label {
+  display: block;
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.45rem;
+}
+
+.field-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.field input {
+  flex: 1;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  color: var(--text);
+  font-family: 'DM Mono', monospace;
+  font-size: 0.82rem;
+  outline: none;
+  transition: border-color 0.2s;
+  min-width: 0;
+}
+.field input:focus { border-color: var(--accent); }
+.field input::placeholder { color: var(--muted); font-size: 0.78rem; }
+
+.eye-btn {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  width: 38px; height: 38px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--muted); font-size: 1rem;
+  flex-shrink: 0; transition: color 0.15s;
+}
+.eye-btn:hover { color: var(--text); }
+
+.hint {
+  font-size: 0.7rem;
+  color: var(--muted);
+  margin-top: 0.3rem;
+  line-height: 1.5;
+}
+.hint a { color: var(--accent); text-decoration: none; }
+
+.saved-notice {
+  font-size: 0.7rem;
+  color: var(--success);
+  margin-top: 0.3rem;
+  display: none;
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid var(--border);
+}
+
+.section-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.6rem;
+}
+
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.1rem 0;
+}
+
+.toggle-label { font-size: 0.9rem; color: var(--dim); }
+
+.toggle {
+  position: relative;
+  width: 44px; height: 24px;
+}
+.toggle input { opacity: 0; width: 0; height: 0; }
+.toggle-slider {
+  position: absolute; inset: 0;
+  background: var(--border);
+  border-radius: 24px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.toggle-slider:before {
+  content: '';
+  position: absolute;
+  width: 18px; height: 18px;
+  left: 3px; top: 3px;
+  background: white;
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+.toggle input:checked + .toggle-slider { background: var(--accent); }
+.toggle input:checked + .toggle-slider:before { transform: translateX(20px); }
+
+.btn-start {
+  width: 100%;
+  padding: 1rem;
+  background: var(--accent);
+  color: #080a10;
+  border: none;
+  border-radius: 10px;
+  font-family: 'Figtree', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+  transition: opacity 0.15s, transform 0.1s;
+}
+.btn-start:hover { opacity: 0.9; transform: translateY(-1px); }
+.btn-start:active { transform: translateY(0); opacity: 0.85; }
+
+/* ════════════════════════════════
+   MAIN APP
+════════════════════════════════ */
+#app { display: none; flex-direction: column; height: 100dvh; }
+#app.active { display: flex; }
+
+/* Header */
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.1rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  padding-top: max(0.75rem, env(safe-area-inset-top));
+}
+
+.header-brand {
+  font-family: 'Crimson Pro', serif;
+  font-size: 1.4rem;
+  font-weight: 300;
+  letter-spacing: 0.04em;
+}
+.header-brand span { color: var(--accent); }
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.hdr-btn {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--muted); font-size: 1rem;
+  transition: all 0.15s;
+}
+.hdr-btn:hover { color: var(--text); border-color: var(--accent); }
+.hdr-btn.on { color: var(--gold); border-color: rgba(255,204,68,0.4); background: var(--gold-dim); }
+.hdr-btn.speaking { color: var(--success); border-color: rgba(74,255,158,0.4); animation: pulse 1s infinite; }
+
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+
+/* ════════════════════════════════
+   CONTINUOUS TEXT FEED
+════════════════════════════════ */
+.feed {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.1rem 1.2rem 0.8rem;
+  overscroll-behavior: contain;
+}
+.feed::-webkit-scrollbar { width: 3px; }
+.feed::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+/* Empty state */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  text-align: center;
+  padding: 4rem 2rem;
+  gap: 1rem;
+}
+.empty-icon { font-size: 2.5rem; opacity: 0.35; }
+.empty-text { font-size: 0.88rem; line-height: 1.7; max-width: 240px; }
+
+/* Lang direction divider — shown when direction changes */
+.lang-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 1.1rem 0 0.7rem;
+  opacity: 0.7;
+}
+.lang-divider-line {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.lang-divider-label {
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* Entry: one transcription+translation block */
+.entry {
+  margin-bottom: 0.9rem;
+  animation: entryIn 0.22s ease;
+}
+@keyframes entryIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.entry-orig {
+  font-size: 0.82rem;
+  color: var(--muted);
+  font-style: italic;
+  line-height: 1.55;
+  margin-bottom: 0.28rem;
+}
+
+.entry-trans {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--text);
+}
+
+/* Term highlight inline */
+.term-hl {
+  background: rgba(255,204,68,0.18);
+  color: var(--gold);
+  border-radius: 3px;
+  padding: 0 2px;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(255,204,68,0.4);
+  transition: background 0.15s;
+}
+.term-hl:hover { background: rgba(255,204,68,0.32); }
+
+/* Processing indicator inline */
+.proc-entry {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.7rem;
+  opacity: 0.6;
+}
+.spinner {
+  width: 13px; height: 13px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.proc-text { font-size: 0.78rem; color: var(--muted); }
+
+/* Live bar */
+.live-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 1rem;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+  min-height: 42px;
+}
+.live-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--muted);
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+.live-dot.rec { background: var(--danger); animation: recDot 1s infinite; }
+.live-dot.proc { background: var(--accent); animation: recDot 1s infinite; }
+@keyframes recDot { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+.live-text {
+  flex: 1;
+  font-size: 0.82rem;
+  color: var(--dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.countdown-ring {
+  width: 22px; height: 22px;
+  flex-shrink: 0;
+}
+.ring-bg { fill: none; stroke: var(--border); stroke-width: 3; }
+.ring-fg { fill: none; stroke: var(--accent); stroke-width: 3; stroke-linecap: round;
+  transform: rotate(-90deg); transform-origin: center;
+  transition: stroke-dashoffset 0.1s linear; }
+
+/* Bottom controls */
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0.8rem 1rem;
+  padding-bottom: max(0.8rem, var(--safe-bottom));
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+  gap: 0.5rem;
+}
+
+.ctrl-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--muted);
+  font-family: 'Figtree', sans-serif;
+  transition: color 0.15s;
+  padding: 0.3rem 0.8rem;
+  border-radius: 10px;
+}
+.ctrl-btn:hover { color: var(--text); }
+.ctrl-btn.on { color: var(--gold); }
+.ctrl-btn.danger { color: var(--danger); }
+.ctrl-icon { font-size: 1.4rem; line-height: 1; }
+.ctrl-label { font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; }
+
+/* Big center record button */
+.rec-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.rec-btn {
+  width: 68px; height: 68px;
+  border-radius: 50%;
+  border: 3px solid var(--border);
+  background: var(--surface2);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.7rem;
+  transition: all 0.2s;
+  position: relative;
+}
+.rec-btn:hover { border-color: var(--accent); }
+.rec-btn.live {
+  border-color: var(--danger);
+  background: var(--danger-dim);
+  box-shadow: 0 0 0 0 rgba(255,74,74,0.5);
+  animation: recPulse 1.4s infinite;
+}
+.rec-btn.paused {
+  border-color: var(--muted);
+  opacity: 0.6;
+}
+@keyframes recPulse {
+  0%  { box-shadow: 0 0 0 0 rgba(255,74,74,0.5); }
+  70% { box-shadow: 0 0 0 14px rgba(255,74,74,0); }
+  100%{ box-shadow: 0 0 0 0 rgba(255,74,74,0); }
+}
+
+.rec-label-text { font-size: 0.6rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+
+/* Tooltip */
+.tooltip {
+  position: fixed;
+  bottom: 140px;
+  left: 1rem; right: 1rem;
+  background: var(--surface2);
+  border: 1px solid var(--gold);
+  border-radius: var(--radius);
+  padding: 1rem;
+  z-index: 300;
+  box-shadow: var(--shadow);
+  display: none;
+  animation: cardIn 0.2s ease;
+}
+.tooltip.show { display: block; }
+.tooltip-term { color: var(--gold); font-weight: 600; font-size: 0.95rem; margin-bottom: 0.4rem; }
+.tooltip-def { font-size: 0.85rem; color: var(--dim); line-height: 1.6; }
+.tooltip-close {
+  position: absolute; top: 0.7rem; right: 0.8rem;
+  background: none; border: none; color: var(--muted);
+  cursor: pointer; font-size: 1rem;
+}
+
+/* Toast */
+.toast {
+  position: fixed; top: 1rem; left: 50%;
+  transform: translateX(-50%) translateY(-60px);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.55rem 1.1rem;
+  font-size: 0.82rem;
+  color: var(--dim);
+  z-index: 400;
+  transition: transform 0.25s ease;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+.toast.ok   { border-color: var(--success); color: var(--success); }
+.toast.err  { border-color: var(--danger);  color: #ff8888; }
+
+.lang-sel-btn {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--muted);
+  font-family: 'Figtree', sans-serif;
+  font-size: 0.72rem;
+  padding: 0.25rem 0.6rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.lang-sel-btn.active {
+  background: var(--accent-dim);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* TTS mode toggle in header */
+.mode-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.06em;
+  padding: 0.18rem 0.45rem;
+  border-radius: 4px;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  color: var(--muted);
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.mode-badge.sequential {
+  border-color: rgba(74,255,158,0.35);
+  color: var(--success);
+  background: rgba(74,255,158,0.08);
+}
+.mode-badge.live-mode {
+  border-color: rgba(255,74,74,0.35);
+  color: #ff8888;
+  background: rgba(255,74,74,0.08);
+}
+</style>
+</head>
+<body>
+
+<!-- ══ SETUP ══ -->
+<div id="setup">
+<div class="setup-inner">
+  <div class="brand">
+    <div class="brand-name">Lex<span>Voice</span></div>
+    <div class="brand-sub">Real-time Legal Interpreter</div>
+    <div style="font-size:0.6rem;color:var(--border);margin-top:0.4rem;letter-spacing:0.1em">v3.0</div>
+  </div>
+
+  <div class="setup-card">
+
+    <div class="field">
+      <label>OpenAI API Key <span style="color:var(--muted);font-size:0.65rem;text-transform:none;letter-spacing:0">(語音識別 + 語音輸出)</span></label>
+      <div class="field-row">
+        <input type="password" id="oai-key" placeholder="sk-..." autocomplete="off" />
+        <button class="eye-btn" onclick="toggleEye('oai-key',this)">👁</button>
+      </div>
+      <div class="hint"><a href="https://platform.openai.com/api-keys" target="_blank">platform.openai.com</a> → API Keys。需要充值才能使用 Whisper。</div>
+      <div class="saved-notice" id="oai-saved">✓ 已記住</div>
+    </div>
+
+    <div class="field">
+      <label>Anthropic API Key <span style="color:var(--muted);font-size:0.65rem;text-transform:none;letter-spacing:0">(Claude 翻譯)</span></label>
+      <div class="field-row">
+        <input type="password" id="ant-key" placeholder="sk-ant-..." autocomplete="off" />
+        <button class="eye-btn" onclick="toggleEye('ant-key',this)">👁</button>
+      </div>
+      <div class="hint">你的 Anthropic credit，用於 AI 翻譯 + 術語解釋。</div>
+      <div class="saved-notice" id="ant-saved">✓ 已記住</div>
+    </div>
+
+    <hr class="divider">
+
+    <div>
+      <div class="section-label">功能設定</div>
+
+      <div class="toggle-row" style="margin-bottom:0.75rem">
+        <span class="toggle-label">🔊 翻譯後語音朗讀</span>
+        <label class="toggle">
+          <input type="checkbox" id="tts-on" checked>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+
+      <div class="toggle-row" style="margin-bottom:0.75rem" id="tts-lang-row">
+        <span class="toggle-label">🗣 中文語音語言</span>
+        <div style="display:flex;gap:0.4rem">
+          <button class="lang-sel-btn active" id="btn-mandarin" onclick="setTTSLang('mandarin')">普通話</button>
+          <button class="lang-sel-btn" id="btn-cantonese" onclick="setTTSLang('cantonese')">粵語（只文字）</button>
+        </div>
+      </div>
+
+      <div class="toggle-row" style="margin-bottom:0.75rem">
+        <span class="toggle-label">⚖️ 法律術語解釋（昆士蘭）</span>
+        <label class="toggle">
+          <input type="checkbox" id="terms-on" checked>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+
+      <div class="toggle-row">
+        <span class="toggle-label">💾 記住 Key（本機儲存）</span>
+        <label class="toggle">
+          <input type="checkbox" id="save-keys" checked>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <button class="btn-start" onclick="startApp()">開始翻譯 →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ APP ══ -->
+<div id="app">
+  <div class="app-header">
+    <div class="header-brand">Lex<span>Voice</span> <span style="font-size:0.6rem;color:var(--muted);font-family:'DM Mono',monospace;font-weight:400">v3.1</span></div>
+    <div class="header-controls">
+      <button class="mode-badge sequential" id="mode-btn" onclick="toggleTTSMode()" title="語音模式">按序</button>
+      <button class="hdr-btn on" id="terms-btn" onclick="toggleTerms()" title="術語解釋">⚖️</button>
+      <button class="hdr-btn" id="tts-btn" onclick="toggleTTS()" title="語音朗讀">🔊</button>
+      <button class="hdr-btn" id="stop-tts-btn" onclick="stopTTS()" title="停止朗讀" style="display:none">⏹</button>
+      <button class="hdr-btn" onclick="goSettings()" title="設定">⚙️</button>
+    </div>
+  </div>
+
+  <div class="feed" id="feed">
+    <div class="empty" id="empty">
+      <div class="empty-icon">🎙</div>
+      <div class="empty-text">按下開始，自動偵測英文 / 普通話 / 粵語<br>翻譯會連續顯示在此</div>
+    </div>
+  </div>
+
+  <div class="live-bar">
+    <div class="live-dot" id="live-dot"></div>
+    <div class="live-text" id="live-text">準備就緒</div>
+    <svg class="countdown-ring" viewBox="0 0 22 22" id="ring" style="display:none">
+      <circle class="ring-bg" cx="11" cy="11" r="8"/>
+      <circle class="ring-fg" id="ring-fg" cx="11" cy="11" r="8"
+        stroke-dasharray="50.3" stroke-dashoffset="50.3"/>
+    </svg>
+  </div>
+
+  <div class="controls">
+    <button class="ctrl-btn" onclick="clearAll()">
+      <span class="ctrl-icon">🗑</span>
+      <span class="ctrl-label">清除</span>
+    </button>
+
+    <div class="rec-wrap">
+      <button class="rec-btn" id="rec-btn" onclick="toggleLive()">
+        <span id="rec-icon">▶</span>
+      </button>
+      <div class="rec-label-text" id="rec-label">開始</div>
+    </div>
+
+    <button class="ctrl-btn" onclick="copyAll()">
+      <span class="ctrl-icon">📋</span>
+      <span class="ctrl-label">複製</span>
+    </button>
+  </div>
+</div>
+
+<!-- Tooltip -->
+<div class="tooltip" id="tooltip">
+  <button class="tooltip-close" onclick="closeTip()">✕</button>
+  <div class="tooltip-term" id="tip-term"></div>
+  <div class="tooltip-def"  id="tip-def"></div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+'use strict';
+
+// ── STATE ──
+let oaiKey = '', antKey = '';
+let ttsOn = true, termsOn = true;
+let ttsLang = 'mandarin'; // 'mandarin' | 'cantonese'
+let ttsMode = 'sequential'; // 'sequential'=按序 | 'live'=跟上
+let lastLangDir = ''; // 追蹤上一段語言方向，換方向時加分隔線
+let isLive = false;
+let mediaStream = null;
+let mediaRecorder = null;
+let audioChunks = [];
+let chunkTimer = null;
+let countdownTimer = null;
+let countdownSec = 0;
+let lastTrans = '';
+let currentAudio = null;
+let isTTSSpeaking = false; // TTS正在播放中
+
+const CHUNK_SEC = 5; // 5 seconds per chunk
+const CIRCUMFERENCE = 2 * Math.PI * 8; // r=8
+
+// ── LEGAL TERMS (Queensland) ──
+const TERMS = {
+  'indictment':   { zh:'起訴書',   def:'正式刑事控罪文件，由檢察官提出，列明被告所面對的刑事罪行。' },
+  'arraignment':  { zh:'提審',     def:'被告在法庭上首次聆聽控罪並作出答辯的程序。' },
+  'bail':         { zh:'保釋',     def:'允許被告在審訊前以金錢擔保或條件獲釋，需在指定時間出庭。' },
+  'plea':         { zh:'答辯',     def:'被告對控罪的正式回應：guilty（認罪）或 not guilty（不認罪）。' },
+  'verdict':      { zh:'裁決',     def:'陪審團或法官對被告是否有罪的最終判定。' },
+  'sentence':     { zh:'判決/刑罰', def:'法院對罪成被告所作的懲罰，包括監禁、罰款、緩刑等。' },
+  'acquittal':    { zh:'無罪釋放', def:'法庭裁定被告無罪，正式解除所有刑事控罪。' },
+  'subpoena':     { zh:'傳票',     def:'法院命令某人出庭作證或提交文件的法律命令。' },
+  'affidavit':    { zh:'宣誓書',   def:'當事人在法律文件中以宣誓方式作出的書面陳述，具法律效力。' },
+  'contempt':     { zh:'藐視法庭', def:'不服從法庭命令或干擾司法程序的行為，可判監禁或罰款。' },
+  'defendant':    { zh:'被告',     def:'在刑事案件中被控告的一方。' },
+  'plaintiff':    { zh:'原告',     def:'在民事訴訟中提出控告的一方。' },
+  'prosecution':  { zh:'控方',     def:'代表政府提出刑事控罪的一方，由檢察官代表。' },
+  'counsel':      { zh:'大律師',   def:'在法庭代表當事人的律師。' },
+  'adjournment':  { zh:'押後',     def:'將法庭聆訊推遲至另一日期進行。' },
+  'remand':       { zh:'還押',     def:'在審訊前將被告羈押候審，不獲保釋。' },
+  'probation':    { zh:'緩刑',     def:'在監督下讓罪犯在社區服刑，而非入獄。' },
+  'parole':       { zh:'假釋',     def:'在服滿部分刑期後提早釋放，仍受條件監督。' },
+  'perjury':      { zh:'偽誓',     def:'在法庭宣誓後故意作出虛假陳述，屬刑事罪行。' },
+  'hearsay':      { zh:'傳聞證據', def:'非親身目睹而轉述他人所說的陳述，一般不可作呈堂證供。' },
+  'injunction':   { zh:'禁制令',   def:'法院命令某人做或不做某事，違者屬藐視法庭。' },
+  'damages':      { zh:'賠償金',   def:'在民事訴訟中，法院判給勝訴方的金錢賠償。' },
+  'mediation':    { zh:'調解',     def:'由中立第三方協助雙方在訴訟前達成和解。' },
+  'affirmation':  { zh:'非宗教式宣誓', def:'不以宗教方式而以個人誠信保證所說為真的替代宣誓。' },
+  'sworn':        { zh:'宣誓',     def:'在法庭上以宗教或非宗教方式保證所說為真。' },
+  'magistrate':   { zh:'裁判官',   def:'在裁判法院審理輕微刑事案件的司法人員。' },
+  'exhibit':      { zh:'呈堂證物', def:'在法庭作為證據呈上的物品或文件。' },
+  'witness':      { zh:'證人',     def:'在法庭上作出親身陳述的人士。' },
+  'cross-examination': { zh:'盤問', def:'由對方律師向證人提問，以質疑其證供可信性。' },
+};
+
+// ── SETUP: load saved keys ──
+window.addEventListener('DOMContentLoaded', () => {
+  const ok = localStorage.getItem('lv_oai');
+  const ak = localStorage.getItem('lv_ant');
+  if (ok) {
+    document.getElementById('oai-key').value = ok;
+    document.getElementById('oai-saved').style.display = 'block';
+  }
+  if (ak) {
+    document.getElementById('ant-key').value = ak;
+    document.getElementById('ant-saved').style.display = 'block';
+  }
+});
+
+function toggleEye(id, btn) {
+  const el = document.getElementById(id);
+  if (el.type === 'password') { el.type = 'text'; btn.textContent = '🙈'; }
+  else { el.type = 'password'; btn.textContent = '👁'; }
+}
+
+function startApp() {
+  const ok = document.getElementById('oai-key').value.trim();
+  const ak = document.getElementById('ant-key').value.trim();
+  ttsOn   = document.getElementById('tts-on').checked;
+  termsOn = document.getElementById('terms-on').checked;
+  const saveKeys = document.getElementById('save-keys').checked;
+
+  if (!ok || !ok.startsWith('sk-')) { toast('請輸入正確的 OpenAI Key', 'err'); return; }
+  if (!ak || !ak.startsWith('sk-ant-')) { toast('請輸入正確的 Claude Key', 'err'); return; }
+
+  oaiKey = ok; antKey = ak;
+  ttsLang = localStorage.getItem('lv_ttslang') || 'mandarin';
+
+  if (saveKeys) {
+    localStorage.setItem('lv_oai', ok);
+    localStorage.setItem('lv_ant', ak);
+  } else {
+    localStorage.removeItem('lv_oai');
+    localStorage.removeItem('lv_ant');
+  }
+
+  document.getElementById('setup').style.display = 'none';
+  document.getElementById('app').classList.add('active');
+  syncHeaderBtns();
+  toast('準備就緒！', 'ok');
+}
+
+function goSettings() {
+  if (isLive) stopLive();
+  document.getElementById('setup').style.display = 'flex';
+  document.getElementById('app').classList.remove('active');
+}
+
+// ── HEADER BUTTONS ──
+function syncHeaderBtns() {
+  const tb = document.getElementById('tts-btn');
+  const qb = document.getElementById('terms-btn');
+  tb.className = 'hdr-btn' + (ttsOn ? ' on' : '');
+  qb.className = 'hdr-btn' + (termsOn ? ' on' : '');
+}
+
+function toggleTTS() {
+  ttsOn = !ttsOn;
+  syncHeaderBtns();
+  toast(ttsOn ? '語音朗讀：開' : '語音朗讀：關（只顯示文字）');
+}
+
+function toggleTTSMode() {
+  ttsMode = ttsMode === 'sequential' ? 'live' : 'sequential';
+  const btn = document.getElementById('mode-btn');
+  if (ttsMode === 'sequential') {
+    btn.textContent = '按序';
+    btn.className = 'mode-badge sequential';
+    toast('按序模式：TTS講完才錄下一段（完整但有delay）');
+  } else {
+    btn.textContent = '跟上';
+    btn.className = 'mode-badge live-mode';
+    toast('跟上模式：持續錄音，可能漏聽部分內容');
+  }
+}
+
+function setTTSLang(lang) {
+  ttsLang = lang;
+  localStorage.setItem('lv_ttslang', lang);
+  document.getElementById('btn-mandarin').classList.toggle('active', lang === 'mandarin');
+  document.getElementById('btn-cantonese').classList.toggle('active', lang === 'cantonese');
+  toast(lang === 'cantonese' ? '粵語：只顯示文字，不播語音' : '普通話語音已選');
+}
+
+function toggleTerms() {
+  termsOn = !termsOn;
+  syncHeaderBtns();
+  toast(termsOn ? '術語解釋：開' : '術語解釋：關');
+}
+
+function stopTTS() {
+  if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+  isTTSSpeaking = false;
+  document.getElementById('stop-tts-btn').style.display = 'none';
+  document.querySelectorAll('.play-btn.playing').forEach(b => {
+    b.classList.remove('playing'); b.textContent = '🔊';
+  });
+}
+
+// ── LIVE RECORDING ──
+async function toggleLive() {
+  if (isLive) { stopLive(); }
+  else { await startLive(); }
+}
+
+async function startLive() {
+  try {
+    mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  } catch (e) {
+    toast('無法存取麥克風：' + e.message, 'err'); return;
+  }
+
+  isLive = true;
+  document.getElementById('rec-btn').classList.add('live');
+  document.getElementById('rec-icon').textContent = '⏹';
+  document.getElementById('rec-label').textContent = '停止';
+  document.getElementById('ring').style.display = 'block';
+
+  startChunk();
+}
+
+function stopLive() {
+  isLive = false;
+  clearTimeout(chunkTimer);
+  clearInterval(countdownTimer);
+
+  if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+    mediaRecorder.stop();
+  }
+  if (mediaStream) {
+    mediaStream.getTracks().forEach(t => t.stop());
+    mediaStream = null;
+  }
+
+  document.getElementById('rec-btn').classList.remove('live');
+  document.getElementById('rec-icon').textContent = '▶';
+  document.getElementById('rec-label').textContent = '開始';
+  document.getElementById('ring').style.display = 'none';
+  setLive('已停止', '');
+}
+
+function startChunk() {
+  if (!isLive) return;
+  audioChunks = [];
+
+  // 語音關時用短切片（2秒）模擬實時出字；語音開用5秒
+  const chunkSec = (!ttsOn) ? 2 : CHUNK_SEC;
+
+  const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
+    ? 'audio/webm;codecs=opus'
+    : MediaRecorder.isTypeSupported('audio/webm') ? 'audio/webm' : 'audio/mp4';
+
+  mediaRecorder = new MediaRecorder(mediaStream, { mimeType });
+  mediaRecorder.ondataavailable = e => { if (e.data.size > 0) audioChunks.push(e.data); };
+  mediaRecorder.onstop = () => {
+    if (!isLive && audioChunks.length === 0) return;
+    const blob = new Blob(audioChunks, { type: mimeType });
+    if (blob.size > 2000) enqueueBlob(blob, mimeType); // 用queue取代直接processBlob
+    if (isLive && !isTTSSpeaking) startChunk(); // TTS播放時不開新段
+  };
+
+  mediaRecorder.start(300);
+  setLive('錄音中…', 'rec');
+
+  // Countdown
+  countdownSec = chunkSec;
+  updateRing(countdownSec);
+  clearInterval(countdownTimer);
+  countdownTimer = setInterval(() => {
+    countdownSec--;
+    updateRing(countdownSec);
+    if (countdownSec <= 0) clearInterval(countdownTimer);
+  }, 1000);
+
+  // Stop this chunk after chunkSec
+  chunkTimer = setTimeout(() => {
+    if (mediaRecorder && mediaRecorder.state === 'recording') {
+      mediaRecorder.stop();
+    }
+  }, chunkSec * 1000);
+}
+
+function updateRing(remaining) {
+  const pct = remaining / CHUNK_SEC;
+  const offset = CIRCUMFERENCE * (1 - pct);
+  document.getElementById('ring-fg').style.strokeDashoffset = offset;
+}
+
+// ── PROCESS QUEUE (確保TTS講完才處理下一段) ──
+let processingQueue = [];
+let isProcessing = false;
+
+function enqueueBlob(blob, mimeType) {
+  processingQueue.push({ blob, mimeType });
+  if (!isProcessing) drainQueue();
+}
+
+async function drainQueue() {
+  if (processingQueue.length === 0) { isProcessing = false; return; }
+  isProcessing = true;
+  const { blob, mimeType } = processingQueue.shift();
+  await processBlob(blob, mimeType);
+  drainQueue();
+}
+
+// ── PROCESS AUDIO ──
+async function processBlob(blob, mimeType) {
+  const proc = addProc();
+  hideEmpty();
+  setLive('識別中…', 'proc');
+
+  try {
+    const text = await whisper(blob, mimeType);
+    if (!text || text.trim().length < 2) { proc.remove(); return; }
+
+    setLive('翻譯中…', 'proc');
+    const result = await translate(text);
+    proc.remove();
+
+    addEntry(result);
+    lastTrans = result.translation;
+    setLive('完成 · 繼續錄音', 'rec');
+
+    // 語音模式分支
+    if (ttsOn && result.translation) {
+      const skipTTS = (result.detected_lang === 'yue' && ttsLang === 'cantonese');
+      if (!skipTTS) {
+        if (ttsMode === 'sequential') {
+          // 按序模式：TTS播完才繼續，錄音暫停
+          const wasLive = isLive;
+          if (wasLive) pauseRecordingForTTS();
+          await speakTTS(result.translation, result.detected_lang);
+          if (wasLive) resumeRecordingAfterTTS();
+        } else {
+          // 跟上模式：不等待，錄音繼續
+          speakTTS(result.translation, result.detected_lang);
+        }
+      }
+    }
+  } catch (err) {
+    proc.remove();
+    toast(err.message, 'err');
+    setLive('錯誤：' + err.message.substring(0, 40), '');
+    console.error(err);
+  }
+}
+
+// ── TTS播放時暫停錄音，播完再繼續 ──
+function pauseRecordingForTTS() {
+  isTTSSpeaking = true;
+  clearTimeout(chunkTimer);
+  clearInterval(countdownTimer);
+  if (mediaRecorder && mediaRecorder.state === 'recording') {
+    mediaRecorder.pause(); // 暫停（不停止，保持stream）
+  }
+  setLive('語音輸出中…（錄音暫停）', 'proc');
+}
+
+function resumeRecordingAfterTTS() {
+  isTTSSpeaking = false;
+  if (!isLive) return;
+  if (mediaRecorder && mediaRecorder.state === 'paused') {
+    mediaRecorder.resume();
+    // 重設chunk計時
+    chunkTimer = setTimeout(() => {
+      if (mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop();
+    }, CHUNK_SEC * 1000);
+    countdownSec = CHUNK_SEC;
+    updateRing(CHUNK_SEC);
+    clearInterval(countdownTimer);
+    countdownTimer = setInterval(() => {
+      countdownSec--;
+      updateRing(countdownSec);
+      if (countdownSec <= 0) clearInterval(countdownTimer);
+    }, 1000);
+  } else {
+    // 若recorder已結束，重開新段
+    startChunk();
+  }
+  setLive('錄音中…', 'rec');
+}
+
+// ── WHISPER ──
+async function whisper(blob, mimeType) {
+  const ext = mimeType.includes('mp4') ? 'mp4' : 'webm';
+  const fd = new FormData();
+  fd.append('file', blob, `a.${ext}`);
+  fd.append('model', 'whisper-1');
+
+  const r = await fetch('https://api.openai.com/v1/audio/transcriptions', {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${oaiKey}` },
+    body: fd
+  });
+  if (!r.ok) {
+    const e = await r.json().catch(() => ({}));
+    throw new Error('Whisper: ' + (e.error?.message || `HTTP ${r.status}`));
+  }
+  return (await r.json()).text;
+}
+
+// ── CLAUDE TRANSLATE ──
+async function translate(text) {
+  const sys = `你是專業即時口譯員，服務於昆士蘭州法庭及醫院。
+
+規則：
+1. 判斷語言：英文 → 繁體中文；普通話或粵語 → 英文
+2. 翻譯自然流暢，保留原意
+3. 法律及醫療術語必須準確，用昆士蘭/澳洲慣用詞
+4. 只輸出 JSON，不要任何其他文字或 markdown
+
+格式：
+{"detected_lang":"en|zh|yue","lang_label":"English|普通話|粵語","original":"原文","translation":"翻譯","terms":[{"term":"術語","zh":"中文","explanation":"一句解釋"}]}
+
+terms 只列原文中出現的重要法律/醫療術語，最多3個，沒有就填[]`;
+
+  const r = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': antKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-5',
+      max_tokens: 500,
+      system: sys,
+      messages: [{ role: 'user', content: text }]
+    })
+  });
+
+  if (!r.ok) {
+    const e = await r.json().catch(() => ({}));
+    throw new Error('Claude: ' + (e.error?.message || `HTTP ${r.status}`));
+  }
+
+  let raw = (await r.json()).content?.[0]?.text || '{}';
+  raw = raw.replace(/```json\n?/g,'').replace(/```\n?/g,'').trim();
+  try { return JSON.parse(raw); }
+  catch { return { detected_lang:'?', lang_label:'?', original:text, translation:raw, terms:[] }; }
+}
+
+// ── OPENAI TTS ──
+async function speakTTS(text, detectedLang) {
+  stopTTS();
+  // 粵語選擇時不播語音
+  if (detectedLang === 'yue' && ttsLang === 'cantonese') return;
+  const voice = detectedLang === 'en' ? 'nova' : 'shimmer';
+  return new Promise(async (resolve) => {
+    try {
+      const r = await fetch('https://api.openai.com/v1/audio/speech', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${oaiKey}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ model: 'tts-1', voice, input: text, speed: 0.95 })
+      });
+      if (!r.ok) { resolve(); return; }
+      const blob = await r.blob();
+      const url = URL.createObjectURL(blob);
+      currentAudio = new Audio(url);
+      isTTSSpeaking = true;
+      document.getElementById('stop-tts-btn').style.display = 'flex';
+      currentAudio.play();
+      currentAudio.onended = () => {
+        document.getElementById('stop-tts-btn').style.display = 'none';
+        isTTSSpeaking = false;
+        currentAudio = null;
+        resolve();
+      };
+      currentAudio.onerror = () => { isTTSSpeaking = false; resolve(); };
+    } catch (e) { isTTSSpeaking = false; resolve(); }
+  });
+}
+
+async function replayCard(text, lang, btn) {
+  stopTTS();
+  btn.classList.add('playing');
+  btn.textContent = '⏹';
+  await speakTTS(text, lang);
+  // track play state via audio events
+  if (currentAudio) {
+    currentAudio.onended = () => {
+      btn.classList.remove('playing');
+      btn.textContent = '🔊';
+      document.getElementById('stop-tts-btn').style.display = 'none';
+      currentAudio = null;
+    };
+  } else {
+    btn.classList.remove('playing'); btn.textContent = '🔊';
+  }
+}
+
+// ── UI ──
+function hideEmpty() {
+  const e = document.getElementById('empty');
+  if (e) e.style.display = 'none';
+}
+
+function addProc() {
+  const feed = document.getElementById('feed');
+  const d = document.createElement('div');
+  d.className = 'proc-entry'; d.id = 'proc';
+  d.innerHTML = `<div class="spinner"></div><div class="proc-text">識別中…</div>`;
+  feed.appendChild(d);
+  feed.scrollTop = feed.scrollHeight;
+  return d;
+}
+
+function addEntry(r) {
+  const feed = document.getElementById('feed');
+  const langDir = r.detected_lang === 'en' ? 'en→zh' : 'zh→en';
+
+  // 換語言方向時加分隔線
+  if (lastLangDir && lastLangDir !== langDir) {
+    const div = document.createElement('div');
+    div.className = 'lang-divider';
+    const arrow = langDir === 'en→zh' ? 'English → 中文' : '中文 → English';
+    div.innerHTML = `<div class="lang-divider-line"></div><div class="lang-divider-label">${arrow}</div><div class="lang-divider-line"></div>`;
+    feed.appendChild(div);
+  } else if (!lastLangDir) {
+    // 第一段，加個小標記
+    const div = document.createElement('div');
+    div.className = 'lang-divider';
+    const arrow = langDir === 'en→zh' ? 'English → 中文' : '中文 → English';
+    div.innerHTML = `<div class="lang-divider-line"></div><div class="lang-divider-label">${arrow}</div><div class="lang-divider-line"></div>`;
+    feed.appendChild(div);
+  }
+  lastLangDir = langDir;
+
+  // 術語highlight
+  let transHtml = escHtml(r.translation || '');
+  let origHtml  = escHtml(r.original || '');
+
+  if (termsOn) {
+    // 收集所有術語
+    const allTerms = [...(r.terms || [])];
+    if (r.original) {
+      const words = r.original.toLowerCase().split(/\W+/);
+      words.forEach(w => {
+        if (TERMS[w] && !allTerms.find(t => t.term.toLowerCase() === w)) {
+          allTerms.push({ term: w, zh: TERMS[w].zh, explanation: TERMS[w].def });
+        }
+      });
+    }
+    // 在原文中highlight術語
+    allTerms.forEach(t => {
+      if (!t.term) return;
+      const safeZh  = escAttr(t.zh || '');
+      const safeDef = escAttr(t.explanation || '');
+      const re = new RegExp(`\\b(${t.term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})\\b`, 'gi');
+      origHtml = origHtml.replace(re, `<span class="term-hl" onclick="showTip('$1','${safeZh}','${safeDef}')">$1</span>`);
+    });
+  }
+
+  const entry = document.createElement('div');
+  entry.className = 'entry';
+  entry.innerHTML = `
+    <div class="entry-orig">${origHtml}</div>
+    <div class="entry-trans">${transHtml}</div>
+  `;
+
+  feed.appendChild(entry);
+  feed.scrollTop = feed.scrollHeight;
+}
+
+// HTML escape helpers
+function escHtml(s) {
+  return String(s||'')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function escAttr(s) {
+  return String(s||'').replace(/'/g,'&#39;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function setLive(txt, dotMode) {
+  document.getElementById('live-text').textContent = txt;
+  const d = document.getElementById('live-dot');
+  d.className = 'live-dot' + (dotMode ? ' ' + dotMode : '');
+}
+
+function showTip(term, zh, def) {
+  document.getElementById('tip-term').textContent = `${term}　${zh}`;
+  document.getElementById('tip-def').textContent = def || '';
+  document.getElementById('tooltip').classList.add('show');
+}
+function closeTip() { document.getElementById('tooltip').classList.remove('show'); }
+
+function clearAll() {
+  stopTTS();
+  document.getElementById('feed').innerHTML = `
+    <div class="empty" id="empty">
+      <div class="empty-icon">🎙</div>
+      <div class="empty-text">按下開始，自動偵測英文 / 普通話 / 粵語<br>翻譯會連續顯示在此</div>
+    </div>`;
+  lastTrans = '';
+  lastLangDir = '';
+  setLive('準備就緒', '');
+}
+
+function copyAll() {
+  const entries = document.querySelectorAll('.entry');
+  if (entries.length === 0) { toast('還沒有翻譯', 'err'); return; }
+  const lines = [];
+  entries.forEach(entry => {
+    const orig  = entry.querySelector('.entry-orig')?.textContent?.trim();
+    const trans = entry.querySelector('.entry-trans')?.textContent?.trim();
+    if (orig)  lines.push(orig);
+    if (trans) lines.push(trans);
+    lines.push('');
+  });
+  const text = lines.join('\n').trim();
+  navigator.clipboard.writeText(text)
+    .then(() => toast(`已複製 ${entries.length} 段 ✓`, 'ok'))
+    .catch(() => {
+      const ta = document.createElement('textarea');
+      ta.value = text; document.body.appendChild(ta);
+      ta.select(); document.execCommand('copy');
+      document.body.removeChild(ta);
+      toast(`已複製 ${entries.length} 段 ✓`, 'ok');
+    });
+}
+
+// Toast
+let _tt;
+function toast(msg, type='') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast show' + (type ? ' '+type : '');
+  clearTimeout(_tt);
+  _tt = setTimeout(() => el.classList.remove('show'), 2800);
+}
+
+// Close tooltip on outside tap
+document.addEventListener('click', e => {
+  const tip = document.getElementById('tooltip');
+  if (tip.classList.contains('show') && !tip.contains(e.target) && !e.target.classList.contains('term-chip')) closeTip();
+});
+</script>
+</body>
+</html>
